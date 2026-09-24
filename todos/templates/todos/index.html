@@ -1,0 +1,56 @@
+{% extends 'todos/base.html' %}
+
+{% block title %}
+<title>Premium Todo List - Saad</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      
+      <div class="todo-card">
+        <div class="todo-header text-center">
+          <h2 class="display-6 fw-bold text-white mb-1">My Tasks</h2>
+          <p class="text-secondary small mb-4">Saad Mehmood's Daily Planner</p>
+        </div>
+
+        <form method="post" action="{% url 'todos:add' %}" class="mb-2">
+          {% csrf_token %}
+          <div class="input-group shadow-lg">
+            <input type="text" class="form-control custom-input" name="title" placeholder="Add a new task..." required>
+            <button type="submit" class="btn btn-primary px-4 fw-bold">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </form>
+
+        <div class="rainbow-line"></div>
+
+        <div class="list-group list-group-flush mt-4">
+          {% for todo in todo_list %}
+          <div class="list-group-item d-flex justify-content-between align-items-center todo-item {% if todo.isCompleted %} todo-complete {% endif %}">
+            
+            <div class="todo-wrapper">
+              <form method="post" action="{% url 'todos:update' todo.id %}" class="d-flex align-items-center">
+                {% csrf_token %}
+                <input type="checkbox" name="isCompleted" onchange="this.form.submit()" 
+                {% if todo.isCompleted %} checked {% endif %} class="form-check-input custom-checkbox">
+              </form>
+              <span class="todo-text">{{ todo.title }}</span>
+            </div>
+            
+            <a href="{% url 'todos:delete' todo.id %}" class="delete-btn" title="Delete Task">
+              <i class="far fa-trash-alt"></i>
+            </a>
+          </div>
+          {% empty %}
+          <p class="text-center text-secondary py-4">No tasks yet. Enjoy your day!</p>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
